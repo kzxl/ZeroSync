@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SyncDB.Properties
+namespace ZeroSync.Properties
 {
 
 

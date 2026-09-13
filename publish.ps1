@@ -11,7 +11,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $Root = $PSScriptRoot
-$Proj = Join-Path $Root "SyncDB\SyncDB.csproj"
+$Proj = Join-Path $Root "ZeroSync\ZeroSync.csproj"
 $Dist = Join-Path $Root "publish"
 
 if (Test-Path $Dist) {

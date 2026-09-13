@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace SyncDB.Model
+namespace ZeroSync.Model
 {
     public class AppConfig
     {

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Timers;
 
-namespace SyncDB.Service
+namespace ZeroSync.Service
 {
     public class WatcherTarget
     {

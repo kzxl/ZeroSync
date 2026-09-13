@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,11 +10,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
-using SyncDB.Core;
-using SyncDB.Model;
-using SyncDB.Service;
+using ZeroSync.Core;
+using ZeroSync.Model;
+using ZeroSync.Service;
 
-namespace SyncDB.ViewModels
+namespace ZeroSync.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
@@ -580,7 +580,7 @@ namespace SyncDB.ViewModels
             _logFlushTimer.Tick += FlushLogs;
             _logFlushTimer.Start();
 
-            AddLog("SyncDB v2.0 khởi động");
+            AddLog("ZeroSync v2.0 khởi động");
             if (!_rcloneService.RcloneExists())
                 AddLog("⚠ rclone.exe không tìm thấy — vào tab Cài đặt để tải về");
             else
@@ -641,7 +641,7 @@ namespace SyncDB.ViewModels
         private void ApplyRunOnStartup(bool enable)
         {
             const string regKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-            const string appName = "SyncDB";
+            const string appName = "ZeroSync";
             try
             {
                 using (var key = Registry.CurrentUser.OpenSubKey(regKey, writable: true))

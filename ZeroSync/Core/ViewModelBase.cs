@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace SyncDB.Core
+namespace ZeroSync.Core
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

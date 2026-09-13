@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
-using SyncDB.ViewModels;
+using ZeroSync.ViewModels;
 using Application = System.Windows.Application;
 
-namespace SyncDB
+namespace ZeroSync
 {
     public partial class MainWindow : Window
     {
@@ -50,12 +50,12 @@ namespace SyncDB
             _trayIcon = new NotifyIcon
             {
                 Icon = SystemIcons.Application,
-                Text = "SyncDB",
+                Text = "ZeroSync",
                 Visible = false
             };
 
             var menu = new ContextMenuStrip();
-            menu.Items.Add("Mở SyncDB", null, (s, e) => ShowWindow());
+            menu.Items.Add("Mở ZeroSync", null, (s, e) => ShowWindow());
             menu.Items.Add("-");
             menu.Items.Add("Thoát", null, (s, e) =>
             {
@@ -83,7 +83,7 @@ namespace SyncDB
             Hide();
             _trayIcon.Visible = true;
             if (showBalloon)
-                _trayIcon.ShowBalloonTip(2000, "SyncDB", "Ứng dụng đang chạy ẩn ở đây", ToolTipIcon.Info);
+                _trayIcon.ShowBalloonTip(2000, "ZeroSync", "Ứng dụng đang chạy ẩn ở đây", ToolTipIcon.Info);
         }
 
         protected override void OnStateChanged(EventArgs e)

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SyncDB.Service
+namespace ZeroSync.Service
 {
     public class RcloneInstaller
     {
@@ -17,7 +17,7 @@ namespace SyncDB.Service
         public RcloneInstaller()
         {
             _http = new HttpClient();
-            _http.DefaultRequestHeaders.Add("User-Agent", "SyncDB-App");
+            _http.DefaultRequestHeaders.Add("User-Agent", "ZeroSync-App");
             _http.Timeout = TimeSpan.FromSeconds(30);
         }
 

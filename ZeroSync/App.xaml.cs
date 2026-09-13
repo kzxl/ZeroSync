@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace SyncDB
+namespace ZeroSync
 {
     public partial class App : Application
     {
@@ -23,7 +23,7 @@ namespace SyncDB
             MessageBox.Show(
                 "Lỗi không xử lý được:\n" + e.Exception.Message +
                 "\n\nXem logs/crash.log để biết thêm chi tiết.",
-                "SyncDB — Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                "ZeroSync — Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void OnDomainUnhandled(object sender, UnhandledExceptionEventArgs e)

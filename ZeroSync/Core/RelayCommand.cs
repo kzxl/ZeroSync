@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Windows.Input;
 
-namespace SyncDB.Core
+namespace ZeroSync.Core
 {
     public class RelayCommand : ICommand
     {
