@@ -1,12 +1,18 @@
 using System;
 using System.IO;
-using Newtonsoft.Json;
+using System.Text.Json;
 using SyncDB.Model;
 
 namespace SyncDB.Service
 {
     public class ConfigService
     {
+        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true
+        };
+
         private readonly string _configPath;
 
         public ConfigService(string appPath)
@@ -22,7 +28,7 @@ namespace SyncDB.Service
                     return new AppConfig();
 
                 var json = File.ReadAllText(_configPath);
-                return JsonConvert.DeserializeObject<AppConfig>(json) ?? new AppConfig();
+                return JsonSerializer.Deserialize<AppConfig>(json, JsonOptions) ?? new AppConfig();
             }
             catch
             {
@@ -34,7 +40,7 @@ namespace SyncDB.Service
         {
             try
             {
-                var json = JsonConvert.SerializeObject(config, Formatting.Indented);
+                var json = JsonSerializer.Serialize(config, JsonOptions);
                 File.WriteAllText(_configPath, json);
             }
             catch { }

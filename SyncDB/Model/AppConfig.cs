@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 
 namespace SyncDB.Model
 {
@@ -27,7 +26,7 @@ namespace SyncDB.Model
         public string RemotePath { get; set; } = "";
         public List<BackupTaskItem> Tasks { get; set; } = new List<BackupTaskItem>();
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public RcloneSyncMode SyncMode { get; set; } = RcloneSyncMode.Copy;
 
         // Performance
@@ -87,7 +86,7 @@ namespace SyncDB.Model
         }
 
         private RcloneSyncMode _syncMode = RcloneSyncMode.Copy;
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public RcloneSyncMode SyncMode
         {
             get => _syncMode;
