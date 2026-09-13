@@ -648,7 +648,10 @@ namespace SyncDB.ViewModels
                 {
                     if (key == null) return;
                     if (enable)
-                        key.SetValue(appName, "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
+                    {
+                        var exePath = Environment.ProcessPath ?? System.IO.Path.Combine(System.AppContext.BaseDirectory, "ZeroSync.exe");
+                        key.SetValue(appName, "\"" + exePath + "\"");
+                    }
                     else
                         key.DeleteValue(appName, throwOnMissingValue: false);
                 }
@@ -1415,7 +1418,7 @@ namespace SyncDB.ViewModels
             catch { remotes = new List<string>(); }
 
             // Phải update collection trên UI thread
-            _dispatcher.InvokeAsync(() =>
+            await _dispatcher.InvokeAsync(() =>
             {
                 RcloneRemotes = new ObservableCollection<string>(remotes);
                 if (remotes.Count == 0)
