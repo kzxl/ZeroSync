@@ -1,28 +1,45 @@
-# 📦 SyncDB — Rclone Sync Manager
+# 📦 ZeroSync — Enterprise Cloud & File Synchronization Manager
 
-> WPF desktop app (MVVM) hỗ trợ giao diện hiện đại cho **rclone**, giúp đồng bộ backup lên Google Drive / OneDrive / S3 mà không cần thao tác command line.
-
----
-
-## ✨ Tính năng
-
-| Tính năng | Mô tả |
-|-----------|-------|
-| 🎨 **Dark Theme UI** | Giao diện WPF hiện đại, dark navy palette, rounded cards |
-| 👤 **Multi-Profile** | Tạo / xóa / chuyển đổi nhiều profile đồng bộ |
-| 🔄 **3 chế độ sync** | `copy` · `sync` · `move` — chọn trực tiếp trên UI |
-| ⚙ **Cấu hình rclone đầy đủ** | Transfers, Checkers, Bandwidth, Log Level, Extra Flags, Dry Run |
-| 👁 **Watch Mode** | Tự động phát hiện file mới (FileSystemWatcher + debounce) và sync |
-| 📝 **Real-time Log** | Xem output rclone trực tiếp trong app, auto-scroll |
-| 🔌 **Test kết nối** | Kiểm tra remote trước khi sync (`rclone lsd`) |
-| 💾 **Auto-save config** | Cấu hình lưu JSON, tự khôi phục khi mở lại |
+<p align="center">
+  <strong>Modern desktop management suite for Rclone cloud backups, mirroring, and automated folder synchronization</strong><br/>
+  WPF Dark UI (MVVM) • Multi-Profile Orchestration • Real-Time Watch Mode • Zero-Config Logging
+</p>
 
 ---
 
-## 🏗 Kiến trúc
+## 📖 Overview
+
+**ZeroSync** is a desktop file synchronization and backup orchestrator designed for workstations and servers. Acting as a frontend for the industry-standard **Rclone** engine, ZeroSync eliminates CLI complexity while providing full control over multi-cloud synchronization (Google Drive, OneDrive, Amazon S3, WebDAV, SFTP, and local/network storage).
+
+Part of the sovereign **ZeroUniverse** application suite, ZeroSync ensures deterministic, reliable, and observable data movement across heterogeneous storage tiers.
+
+| Component | Tech Stack | Role |
+| :--- | :--- | :--- |
+| **ZeroSync UI** | C# WPF (.NET Framework 4.6.2) | Dark theme MVVM interface, profile selector, realtime log viewer |
+| **Engine** | Rclone (`rclone.exe`) | High-speed multi-threaded cloud transport, chunked transfers, deduplication |
+| **Watcher** | `FileSystemWatcher` + Async Debounce | Realtime file modification detection and automated sync trigger |
+
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+| :--- | :--- |
+| 🎨 **Dark Theme UI** | Modern Fluent-inspired dark navy desktop interface with rounded cards |
+| 👤 **Multi-Profile Management** | Create, switch, and maintain isolated synchronization profiles |
+| 🔄 **3 Sync Operation Modes** | Direct support for `Copy` (add new/updated), `Sync` (exact mirror), and `Move` (transfer and delete source) |
+| ⚙ **Granular Rclone Controls** | Tune concurrent transfers, checksum checkers, bandwidth limits (`--bwlimit`), log verbosity, and custom flags |
+| 👁 **Automated Watch Mode** | Background file watcher with debounce timer to automatically push newly generated files |
+| 📝 **Real-Time Log Streamer** | In-app live stdout/stderr console with autoscroll and structured session headers |
+| 🔌 **Connectivity Diagnostics** | 1-click remote path verification (`rclone lsd`) before starting batch jobs |
+| 💾 **Persistent Configuration** | Atomic JSON configuration store (`config.json`) with auto-recovery on startup |
+
+---
+
+## 🏗 Architecture & Internal Structure
 
 ```
-SyncDB/
+ZeroSync/
 ├── Core/                          # MVVM Infrastructure
 │   ├── RelayCommand.cs            # ICommand implementation
 │   ├── ViewModelBase.cs           # INotifyPropertyChanged base
@@ -32,187 +49,114 @@ SyncDB/
 │   └── AppConfig.cs               # AppConfig + SyncProfile + RcloneSyncMode
 │
 ├── Service/
-│   ├── RcloneService.cs           # Wrapper rclone process, real-time streaming
-│   ├── ConfigService.cs           # JSON load/save (Newtonsoft.Json)
-│   └── WatcherService.cs          # FileSystemWatcher + async debounce
+│   ├── RcloneService.cs           # Process wrapper, stdout/stderr streaming
+│   ├── ConfigService.cs           # Atomic JSON persistence (Newtonsoft.Json)
+│   └── WatcherService.cs          # FileSystemWatcher + async debounce engine
 │
 ├── ViewModels/
-│   └── MainViewModel.cs           # MVVM orchestrator — commands, bindings
+│   └── MainViewModel.cs           # MVVM orchestrator — commands and state bindings
 │
 ├── Themes/
 │   └── Styles.xaml                # Dark theme resource dictionary
 │
-├── MainWindow.xaml / .xaml.cs     # Shell UI (minimal code-behind)
+├── MainWindow.xaml / .xaml.cs     # Minimal code-behind shell UI
 ├── App.xaml / .xaml.cs            # Application entry point
-└── SyncDB.csproj                  # .NET Framework 4.6.2 WPF
+└── SyncDB.csproj                  # WPF Project File
 ```
 
-**Pattern**: MVVM strict — ViewModel không biết View, View không có logic, data binding only.
+---
+
+## 📋 System Requirements
+
+| Requirement | Details |
+| :--- | :--- |
+| **Operating System** | Windows 10, Windows 11, or Windows Server 2012 R2+ |
+| **Runtime** | .NET Framework 4.6.2 or higher |
+| **Engine Binary** | `rclone.exe` (placed alongside `SyncDB.exe` / `ZeroSync.exe` or in system `PATH`) |
+| **Storage Providers** | Google Drive, OneDrive, AWS S3, Cloudflare R2, MinIO, or any Rclone-supported backend |
 
 ---
 
-## 📋 Yêu cầu hệ thống
+## 🚀 Quick Start & Usage
 
-| Yêu cầu | Chi tiết |
-|----------|----------|
-| **OS** | Windows Server 2012 R2+ / Windows 7+ |
-| **Runtime** | .NET Framework 4.6.2 |
-| **rclone** | `rclone.exe` (đặt cùng thư mục với SyncDB.exe) |
-| **Cloud** | Google Drive / OneDrive / S3 / bất kỳ remote nào rclone hỗ trợ |
+### 1. Configure Rclone Remote (One-Time Setup)
 
----
-
-## 🚀 Cài đặt & Sử dụng
-
-### 1. Cấu hình rclone (1 lần duy nhất)
+Open your terminal and configure your cloud storage providers via the interactive Rclone CLI:
 
 ```bash
-# Mở terminal, chạy rclone config wizard
+# Launch interactive config wizard
 rclone config
 
-# Tạo remote, ví dụ: ggdrive (Google Drive)
-# Sau khi xong, verify:
-rclone lsd ggdrive:
+# Follow prompts to configure a remote (e.g., 'gdrive')
+# Verify remote connection:
+rclone lsd gdrive:
 ```
 
-### 2. Chạy SyncDB
+### 2. Launch ZeroSync
 
-1. Đặt `rclone.exe` vào cùng thư mục `SyncDB.exe`
-2. Chạy `SyncDB.exe`
-3. Cấu hình trên UI:
-
-| Trường | Ví dụ |
-|--------|-------|
-| **Thư mục backup** | `D:\DB_Backup` |
-| **Remote Path** | `ggdrive:DB_Backup` |
-| **Chế độ** | `Copy` (mặc định) |
-
-4. Click **▶ Chạy Sync** hoặc bật **Watch Mode** để tự động sync khi có file mới
+1. Place `rclone.exe` in the application root directory.
+2. Launch `SyncDB.exe`.
+3. Configure your sync profile in the interface:
+   - **Source Directory**: Path to local backup folder (e.g., `D:\Data_Backup`).
+   - **Remote Path**: Target remote and directory (e.g., `gdrive:Company_Backups`).
+   - **Sync Mode**: `Copy` (safe default), `Sync` (mirror), or `Move`.
+4. Click **▶ Start Sync** to execute immediately, or toggle **Watch Mode** for continuous synchronization.
 
 ---
 
-## ⚙ Cấu hình Rclone (qua UI)
+## 📂 Multi-Profile Use Cases
 
-### Tab "Đồng bộ"
+ZeroSync supports unlimited isolated profiles:
+- **Production Database Backup**: `D:\SQL_Backup` ➔ `gdrive:Prod_DB` (`Copy`, Watch Mode 30s)
+- **Document Archives**: `E:\Documents` ➔ `s3:Corp_Archive` (`Sync`, `--bwlimit 2M`)
+- **Staging Dumps**: `D:\Staging` ➔ `onedrive:Staging` (`Move`)
 
-| Option | Mô tả |
-|--------|-------|
-| **Chế độ sync** | `Copy` (chỉ copy mới) · `Sync` (mirror) · `Move` (copy rồi xóa source) |
-| **Bỏ qua file đã tồn tại** | `--ignore-existing` |
-| **Dry Run** | Chạy thử, không copy thật (`--dry-run`) |
-
-### Tab "Cấu hình Rclone"
-
-| Option | Mô tả | Mặc định |
-|--------|-------|----------|
-| **Transfers** | Số file copy đồng thời | `4` |
-| **Checkers** | Số file check đồng thời | `8` |
-| **Bandwidth** | Giới hạn băng thông (vd: `1M`, `500k`) | Không giới hạn |
-| **Log Level** | `DEBUG` · `INFO` · `NOTICE` · `ERROR` | `INFO` |
-| **Extra Flags** | Thêm flag tùy ý (vd: `--exclude "*.tmp"`) | — |
-
-### Watch Mode
-
-| Option | Mô tả | Mặc định |
-|--------|-------|----------|
-| **Debounce** | Chờ N giây sau file cuối trước khi sync | `15s` |
-| **File Filter** | Chỉ watch các file matching (vd: `*.bak;*.txt`) | `*.bak;*.txt` |
+Profiles are persisted in `config.json` and selectable on-the-fly via the header dropdown.
 
 ---
 
-## 📂 Multi-Profile
-
-- Click **＋** để tạo profile mới
-- Mỗi profile có cấu hình riêng biệt (source, remote, options)
-- Chuyển profile bằng dropdown trên header
-- Config lưu tại `config.json` cùng thư mục app
-
-**Ví dụ use-case**:
-- Profile "DB Production" → `D:\SQL_Backup` → `ggdrive:Prod_DB`
-- Profile "DB Staging" → `D:\SQL_Staging` → `ggdrive:Staging_DB`
-
----
-
-## 🔄 Flow hoạt động
+## 🔄 Execution Pipeline
 
 ```
-[Người dùng]
-     │
-     │ Cấu hình trên UI (source, remote, options)
-     ▼
-[SyncDB WPF]
-     │
-     ├── Lưu config.json
-     ├── Ghi log header vào logs/rclone.log
-     ▼
-[rclone.exe]
-     │
-     │ copy/sync/move local_folder → remote:path
-     │ --transfers N --checkers N --bwlimit X
-     │ --ignore-existing --log-file --log-level
-     ▼
-[Google Drive / OneDrive / S3]
+[User / Application Event]
+       │
+       ▼
+ [ZeroSync WPF Client]
+       │
+       ├── Save profile state to config.json
+       ├── Write session header to logs/rclone.log
+       ▼
+ [rclone.exe Subprocess]
+       │
+       ├── Stream copy/sync/move: local_path ──► remote:path
+       ├── Throttle parameters (--transfers, --checkers, --bwlimit)
+       ▼
+ [Cloud Storage (Google Drive / S3 / OneDrive)]
 
-     ─── Watch Mode ───
-[FileSystemWatcher]
-     │
-     │ Phát hiện file mới (.bak, .txt, ...)
-     │ Debounce 15s
-     ▼
-[Auto trigger rclone sync]
+ ─── Real-Time Watch Pipeline ───
+ [FileSystemWatcher] ──► [Debounce Engine (15s)] ──► [Auto-Trigger Rclone Process]
 ```
 
 ---
 
-## 🔨 Build từ source
+## 🔨 Build from Source
 
-### Yêu cầu
-- Visual Studio 2019+ hoặc MSBuild 15+
-- .NET Framework 4.6.2 SDK
+### Prerequisites
+- Visual Studio 2022 / 2019 or MSBuild 15+
+- .NET Framework 4.6.2 Developer Pack
 
-### Build
+### Build Command
 
 ```bash
-# Sử dụng MSBuild
-msbuild SyncDB/SyncDB.csproj /p:Configuration=Release
+# Build Release using MSBuild
+MSBuild.exe SyncDB.slnx /p:Configuration=Release /v:m
 
-# Output: SyncDB/bin/Release/SyncDB.exe
+# Artifact generated at:
+# SyncDB/bin/Release/SyncDB.exe
 ```
-
-### Deploy
-
-Copy toàn bộ thư mục `bin/Release/` + `rclone.exe` lên server đích.
-
----
-
-## 📝 Logging
-
-SyncDB ghi 2 loại log trong thư mục `logs/`:
-
-| File | Nội dung |
-|------|----------|
-| `app.log` | Log nội bộ app (start, stop, errors) |
-| `rclone.log` | Log chi tiết do rclone ghi (file copied, errors, stats) |
-
-Mỗi lần chạy có header:
-```
-===== RUN 2026-03-23 14:30:15 =====
-```
-
----
-
-## ⚠ Lưu ý
-
-- SyncDB **không tự refresh token** Google Drive. Nếu hết hạn:
-  ```bash
-  rclone config reconnect ggdrive:
-  ```
-- Không chỉnh sửa `rclone.conf` khi SyncDB đang chạy
-- **Watch Mode** chạy trên background thread, không block UI
-- Config tự lưu khi Start sync hoặc click nút Lưu
 
 ---
 
 ## 📄 License
 
-Internal tool — sử dụng nội bộ.
+Released under the **MIT License**. Part of the sovereign **ZeroUniverse** industrial computing ecosystem.
