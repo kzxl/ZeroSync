@@ -1,11 +1,19 @@
 # 📦 ZeroSync — Enterprise Cloud & File Synchronization Manager
 
 <p align="center">
+  <a href="https://github.com/kzxl/ZeroSync"><img src="https://img.shields.io/badge/Type-Desktop%20Application-007ACC?style=flat-square&logo=windows" alt="Type: Desktop App" /></a>
+  <a href="https://github.com/kzxl/ZeroSync"><img src="https://img.shields.io/badge/Ecosystem-Zero%20Universe-8A2BE2?style=flat-square" alt="Ecosystem: Zero Universe" /></a>
+  <a href="https://github.com/kzxl/ZeroSync"><img src="https://img.shields.io/badge/Platform-Windows%20x64-brightgreen?style=flat-square" alt="Platform: Windows x64" /></a>
+  <a href="https://github.com/kzxl/ZeroSync"><img src="https://img.shields.io/badge/Distribution-Standalone%20Single--File-2ea44f?style=flat-square" alt="Distribution: Standalone Single-File" /></a>
+</p>
+
+<p align="center">
   <strong>Modern desktop management suite for Rclone cloud backups, mirroring, and automated folder synchronization</strong><br/>
   WPF Dark UI (MVVM) • Multi-Profile Orchestration • Real-Time Watch Mode • Zero-Config Logging
 </p>
 
 ---
+
 
 ## 📖 Overview
 
