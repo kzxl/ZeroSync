@@ -68,6 +68,36 @@ namespace ZeroSync.Tests
             Assert.Equal("{C346FD78-B590-449D-9964-6E5DA4A29A09}", idMatch.Groups[1].Value);
         }
 
+        [Fact]
+        public void FindAvailableDriveLetter_ReturnsUnusedDriveLetter()
+        {
+            var letter = VssSnapshotService.FindAvailableDriveLetter();
+            Assert.NotNull(letter);
+            Assert.InRange(letter.Value, 'A', 'Z');
+
+            var currentDrives = Directory.GetLogicalDrives();
+            Assert.DoesNotContain($"{letter.Value}:\\", currentDrives, StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetMountedSnapshotPath_TransformsPathToMountedDriveCleanly()
+        {
+            var original = @"C:\ERP\Data\Accounting.mdf";
+            var mountedDrive = 'X';
+
+            var resolved = VssSnapshotService.GetMountedSnapshotPath(original, mountedDrive);
+
+            Assert.Equal(@"X:\ERP\Data\Accounting.mdf", resolved);
+        }
+
+        [Fact]
+        public void TryMountSnapshotAsDrive_ValidatesInputSafely()
+        {
+            bool ok = VssSnapshotService.TryMountSnapshotAsDrive("", out _, out string error);
+            Assert.False(ok);
+            Assert.Contains("empty", error, StringComparison.OrdinalIgnoreCase);
+        }
+
         public void Dispose()
         {
             try
