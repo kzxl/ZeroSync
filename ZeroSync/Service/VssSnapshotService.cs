@@ -114,10 +114,16 @@ namespace ZeroSync.Service
                 throw new InvalidOperationException($"vssadmin failed with exit code {process.ExitCode}: {error}\n{output}");
             }
 
-            // Parse Shadow Copy Volume Name: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy{N}
-            var volMatch = Regex.Match(output, @"Shadow Copy Volume Name:\s*(\\\\\?\\GLOBALROOT\\Device\\[^\r\n]+)", RegexOptions.IgnoreCase);
-            // Parse Shadow Copy ID: {GUID}
-            var idMatch = Regex.Match(output, @"Shadow Copy ID:\s*(\{[0-9a-fA-F\-]+\})", RegexOptions.IgnoreCase);
+            // Extract Volume Name: find (\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy\d+) regardless of OS language
+            var volMatch = Regex.Match(output, @"(\\\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy\d+)", RegexOptions.IgnoreCase);
+            if (!volMatch.Success)
+            {
+                // Fallback in case device naming differs
+                volMatch = Regex.Match(output, @"(\\\\\?\\GLOBALROOT\\Device\\[^\s\r\n]+)", RegexOptions.IgnoreCase);
+            }
+
+            // Extract Shadow Copy ID: find GUID pattern {[0-9a-fA-F-]{36}} regardless of label language
+            var idMatch = Regex.Match(output, @"(\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\})");
 
             if (!volMatch.Success)
             {
@@ -133,6 +139,60 @@ namespace ZeroSync.Service
 
             _activeSnapshot = info;
             return info;
+        }
+
+        /// <summary>
+        /// Creates a directory symbolic link to the shadow volume so standard .NET file APIs can access files.
+        /// </summary>
+        public static bool TryCreateShadowMountLink(string linkDirectoryPath, string shadowVolumeName, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            try
+            {
+                var target = shadowVolumeName.TrimEnd('\\') + "\\";
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/c mklink /d \"{linkDirectoryPath}\" \"{target}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var proc = Process.Start(psi);
+                if (proc == null)
+                {
+                    errorMessage = "Failed to launch cmd for mklink.";
+                    return false;
+                }
+                proc.WaitForExit();
+                if (proc.ExitCode != 0)
+                {
+                    errorMessage = proc.StandardError.ReadToEnd();
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Removes the directory symbolic link previously created for a shadow volume.
+        /// </summary>
+        public static void RemoveShadowMountLink(string linkDirectoryPath)
+        {
+            try
+            {
+                if (Directory.Exists(linkDirectoryPath))
+                {
+                    Directory.Delete(linkDirectoryPath);
+                }
+            }
+            catch { }
         }
 
         /// <summary>

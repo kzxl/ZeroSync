@@ -46,6 +46,28 @@ namespace ZeroSync.Tests
             }
         }
 
+        [Fact]
+        public void LocalizedOutput_VolumeAndIdRegex_MatchesCorrectlyAcrossLanguages()
+        {
+            // Simulate Vietnamese Windows vssadmin output
+            var vietnameseOutput = @"vssadmin 1.1 - Công cụ dòng lệnh Quản trị Bản sao Bóng Khối lượng
+(C) Bản quyền 2001-2013 Microsoft Corp.
+
+Đã tạo thành công bản sao bóng:
+    Tên ổ bản sao bóng: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy15
+    ID bản sao bóng: {C346FD78-B590-449D-9964-6E5DA4A29A09}
+";
+
+            var volMatch = System.Text.RegularExpressions.Regex.Match(vietnameseOutput, @"(\\\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var idMatch = System.Text.RegularExpressions.Regex.Match(vietnameseOutput, @"(\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\})");
+
+            Assert.True(volMatch.Success);
+            Assert.Equal(@"\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy15", volMatch.Groups[1].Value);
+
+            Assert.True(idMatch.Success);
+            Assert.Equal("{C346FD78-B590-449D-9964-6E5DA4A29A09}", idMatch.Groups[1].Value);
+        }
+
         public void Dispose()
         {
             try
